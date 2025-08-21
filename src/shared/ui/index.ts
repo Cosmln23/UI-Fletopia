@@ -13,6 +13,7 @@ export { AddCargoModal } from "./marketplace/AddCargoModal";
 export { CargoDetailModal } from "./marketplace/CargoDetailModal";
 export { ScoutBar } from "./marketplace/ScoutBar";
 export { ScoutStatus } from "./marketplace/ScoutStatus";
+export { ChatWidget } from "./chat/ChatWidget";
 export { SettingsSidebar } from "./settings/SettingsSidebar";
 export { ProfileGeneralSection } from "./settings/ProfileGeneralSection";
 export { CompanyVerificationSection } from "./settings/CompanyVerificationSection";
