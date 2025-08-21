@@ -11,6 +11,28 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {},
+    overrides: [
+      {
+        files: ["src/shared/ui/**/*.{ts,tsx}", "src/shared/ui/*.{ts,tsx}"],
+        rules: {
+          "no-restricted-imports": [
+            "error",
+            {
+              patterns: [
+                {
+                  group: ["../*/**", "../*"],
+                  message:
+                    "UI components must not import sibling components. Use props composition or import from outside shared/ui.",
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  },
 ];
 
 export default eslintConfig;
