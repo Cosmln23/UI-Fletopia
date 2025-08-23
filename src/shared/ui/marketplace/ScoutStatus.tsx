@@ -17,3 +17,4 @@ export const ScoutStatus: React.FC<ScoutStatusProps> = ({ active, radiusKm, loca
 };
 
 
+

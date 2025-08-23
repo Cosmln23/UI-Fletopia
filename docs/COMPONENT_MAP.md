@@ -49,6 +49,14 @@ Acest fișier listează toate componentele UI folosite pe fiecare pagină și in
   - PreferencesSecuritySection
   - FooterSection
 
+### Global
+
+- ChatWidget (sticky, dreapta-jos, peste BottomNav)
+  - FAB negru opac (56px), icon mesaj alb
+  - Panou chat P2P (800px lățime, max 85vh), fundal negru, glass-border
+  - Animație „rolă” mai lentă (deschidere ~520ms, închidere ~400ms)
+  - Mesaje mock între doi utilizatori (me/peer), bule stânga/dreapta, avatar
+
 ### Biblioteca UI (shared)
 
 - TopNavbar
