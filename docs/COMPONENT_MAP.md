@@ -1,3 +1,24 @@
+## Fleetopia UI – Component Map
+
+### Structure (feature-based)
+
+```
+src/
+  app/                # Next.js app router pages/layouts
+  components/ui/      # Colocated primitive UI components
+  features/           # Feature modules (marketplace, settings, etc.)
+  lib/                # Utilities, clients, helpers
+  shared/ui/          # Shared composite UI components (current)
+```
+
+### Key exports
+- `shared/ui/index.ts`: central export for shared UI components
+- `lib/index.ts`: utilities (e.g., `cn`)
+
+### Notes
+- Glassmorphism utilities are defined in `src/app/globals.css`
+- Tailwind config tokens in `tailwind.config.ts`
+
 ## Documentație UI – Harta Componentelor
 
 Acest fișier listează toate componentele UI folosite pe fiecare pagină și inventarul componentelor UI disponibile. Scop: suport pentru planificarea back-end. Nu conține detalii tehnice.

@@ -20,7 +20,7 @@ export type CargoDetailModalProps = {
   open: boolean;
   onClose: () => void;
   contentHtml?: string;
-  data?: CargoDetailData;
+  data?: CargoDetailData | undefined;
   onSendQuote?: (data?: CargoDetailData) => void;
   onChat?: (data?: CargoDetailData) => void;
 };

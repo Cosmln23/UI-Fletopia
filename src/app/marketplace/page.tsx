@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { TopNavbar, BottomNav, MarketplaceHero, MarketplaceTabs, MarketplaceFilters, CargoCard, AddCargoModal, CargoDetailModal, FooterSection, ScoutBar, ScoutStatus } from "@/shared/ui";
+import { TopNavbar, BottomNav, MarketplaceHero, MarketplaceTabs, MarketplaceFilters, CargoCard, AddCargoModal, CargoDetailModal, FooterSection, ScoutStatus } from "@/shared/ui";
+import { ScoutBar } from "@/shared/ui/marketplace/ScoutBar";
 import type { CargoDetailData } from "@/shared/ui/marketplace/CargoDetailModal";
 
 type TabKey = Parameters<typeof MarketplaceTabs>[0]["active"];
@@ -103,7 +104,7 @@ export default function MarketplacePage() {
       },
       metrics: { mapsUrl },
       schedule: { loadWindow: "azi 08:00 - 09:00", eta: "azi 15:30", deadline: "azi 18:00" },
-      cargo: { description: c.type, weightKg: undefined, volumeM3: undefined, special: [] },
+      cargo: { description: c.type, special: [] },
       resources: { vehicleType: "Van 3.5t", priceText: c.price },
     };
     setDetailData(data);
