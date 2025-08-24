@@ -36,7 +36,7 @@ export async function updateUserSubscription(params: {
   const supabase = createAdminClient();
   const { error } = await supabase
     .from('profiles')
-    .update({ subscription_status: params.status })
+    .update({ subscription_status: params.status } as Database['public']['Tables']['profiles']['Update'])
     .eq('user_id', params.userId);
   if (error) {
     auditLog('subscription_update_failed', { userId: params.userId, error: error.message });
