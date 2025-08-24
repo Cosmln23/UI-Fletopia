@@ -49,7 +49,7 @@ export default function MarketplacePage() {
     }, observerOptions);
     document.querySelectorAll(".animate-on-scroll").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [filters]);
 
   const filteredCargo = useMemo(() => {
     let list = [...initialCargo];

@@ -79,7 +79,7 @@ export function subscribeToDealChat(
     .subscribe();
 
   return () => {
-    supabase.removeChannel(channel);
+    void supabase.removeChannel(channel);
   };
 }
 

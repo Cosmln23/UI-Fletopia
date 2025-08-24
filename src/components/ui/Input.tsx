@@ -16,7 +16,8 @@ export const Input: React.FC<InputProps> = ({
   id,
   ...rest
 }) => {
-  const inputId = id ?? React.useId();
+  const generatedId = React.useId();
+  const inputId = id ?? generatedId;
   const [showPassword, setShowPassword] = React.useState(false);
   const isPassword = type === 'password';
   const actualType = isPassword && showPassword ? 'text' : type;

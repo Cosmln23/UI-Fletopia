@@ -8,7 +8,7 @@ export async function GET() {
     const { error } = await supabase.auth.getSession();
     if (error) throw error;
     return NextResponse.json({ status: 'ok' });
-  } catch (e) {
+  } catch {
     return NextResponse.json({ status: 'error' }, { status: 500 });
   }
 }

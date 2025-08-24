@@ -3,7 +3,6 @@ import React from 'react';
 
 export default function ErrorBoundary({ error, reset }: { error: Error; reset: () => void }) {
   React.useEffect(() => {
-    // eslint-disable-next-line no-console
     console.error(error);
   }, [error]);
   return (

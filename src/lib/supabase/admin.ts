@@ -46,7 +46,7 @@ export async function updateUserSubscription(params: {
 }
 
 // Helper: bulk insert loads (example seeding op)
-export async function bulkInsertLoads(rows: Array<Database['public']['Tables']['loads']['Insert']>) {
+export async function bulkInsertLoads(rows: Database['public']['Tables']['loads']['Insert'][]) {
   const supabase = createAdminClient();
   const { error } = await supabase.from('loads').insert(rows);
   if (error) {

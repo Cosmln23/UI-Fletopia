@@ -1,13 +1,7 @@
 // Auto-typed from Supabase migrations (concise hand-crafted model)
 // If you later generate types via the Supabase CLI, replace this file.
 
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
 export type Database = {
   public: {
@@ -18,7 +12,7 @@ export type Database = {
           role: Database['public']['Enums']['user_role'];
           full_name: string | null;
           company_name: string | null;
-          home_base_geo: unknown | null; // geography(Point, 4326)
+          home_base_geo: object | null; // geography(Point, 4326)
           subscription_status: Database['public']['Enums']['subscription_status'];
           created_at: string;
           updated_at: string;
@@ -28,7 +22,7 @@ export type Database = {
           role?: Database['public']['Enums']['user_role'];
           full_name?: string | null;
           company_name?: string | null;
-          home_base_geo?: unknown | null;
+          home_base_geo?: object | null;
           subscription_status?: Database['public']['Enums']['subscription_status'];
           created_at?: string;
           updated_at?: string;
@@ -37,7 +31,7 @@ export type Database = {
           role?: Database['public']['Enums']['user_role'];
           full_name?: string | null;
           company_name?: string | null;
-          home_base_geo?: unknown | null;
+          home_base_geo?: object | null;
           subscription_status?: Database['public']['Enums']['subscription_status'];
           updated_at?: string;
         };
@@ -48,8 +42,8 @@ export type Database = {
           created_by: string | null;
           title: string;
           description: string | null;
-          pickup_location_geo: unknown; // geography(Point, 4326)
-          delivery_location_geo: unknown; // geography(Point, 4326)
+          pickup_location_geo: object; // geography(Point, 4326)
+          delivery_location_geo: object; // geography(Point, 4326)
           weight_kg: string | null; // numeric
           volume_m3: string | null; // numeric
           vehicle_type: string | null;
@@ -62,8 +56,8 @@ export type Database = {
           created_by?: string | null;
           title: string;
           description?: string | null;
-          pickup_location_geo: unknown;
-          delivery_location_geo: unknown;
+          pickup_location_geo: object;
+          delivery_location_geo: object;
           weight_kg?: string | null;
           volume_m3?: string | null;
           vehicle_type?: string | null;
@@ -75,8 +69,8 @@ export type Database = {
           created_by?: string | null;
           title?: string;
           description?: string | null;
-          pickup_location_geo?: unknown;
-          delivery_location_geo?: unknown;
+          pickup_location_geo?: object;
+          delivery_location_geo?: object;
           weight_kg?: string | null;
           volume_m3?: string | null;
           vehicle_type?: string | null;
@@ -166,7 +160,7 @@ export type Database = {
           provider: string | null;
           lat: number | null;
           lng: number | null;
-          geo: unknown | null; // geography(Point, 4326)
+          geo: object | null; // geography(Point, 4326)
           created_at: string;
         };
         Insert: {
@@ -175,14 +169,14 @@ export type Database = {
           provider?: string | null;
           lat?: number | null;
           lng?: number | null;
-          geo?: unknown | null;
+          geo?: object | null;
           created_at?: string;
         };
         Update: {
           provider?: string | null;
           lat?: number | null;
           lng?: number | null;
-          geo?: unknown | null;
+          geo?: object | null;
         };
       };
     };
