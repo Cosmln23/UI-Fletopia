@@ -175,3 +175,4 @@ CREATE POLICY chat_insert_participants ON public.chat_messages
 COMMIT;
 
 
+

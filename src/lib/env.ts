@@ -13,6 +13,7 @@ const clientSchema = z.object({
 const serverSchema = z.object({
   OPENAI_API_KEY: z.string().min(1).optional(),
   STRIPE_SECRET_KEY: z.string().min(1).optional(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
 });
 
 const mergedSchema = clientSchema.merge(serverSchema);

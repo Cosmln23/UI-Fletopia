@@ -83,24 +83,11 @@ export const AddCargoModal: React.FC<AddCargoModalProps> = ({ open, onClose, onS
               placeholder="Lipește textul anunțului aici. Ex: Urgent van 8 paleți Cluj-București mâine, 1 tonă..."
             />
             <div className="flex items-center gap-2">
-              <button type="button" onClick={() => { handlePickFiles(); handleMagic(); }} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: "linear-gradient(90deg, rgba(244,114,182,0.6), rgba(99,102,241,0.6))" }}>✨ Completează Magic</button>
-              <input ref={fileRef} type="file" multiple className="hidden" onChange={handleFilesChange} />
+              <button type="button" onClick={handleMagic} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: "linear-gradient(90deg, rgba(244,114,182,0.6), rgba(99,102,241,0.6))" }}>✨ Completează Magic</button>
             </div>
             {showMagicWarning && (
               <div className="glass-border rounded-lg p-3 text-xs text-yellow-300" aria-live="polite">
                 Date extrase de AI. Vă rugăm să verificați corectitudinea înainte de a posta.
-              </div>
-            )}
-            {!!attachments.length && (
-              <div className="flex flex-wrap gap-2">
-                {attachments.map((f, idx) => (
-                  <div key={idx} className="glass-border rounded px-2 py-1 text-xs text-gray-300 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14,2 14,8 20,8"></polyline></svg>
-                    <span className="truncate max-w-[160px]">{f.name}</span>
-                    <span className="text-gray-500">({Math.max(1, Math.round(f.size / 1024))} KB)</span>
-                    <button type="button" className="text-gray-400 hover:text-white" onClick={() => removeFile(idx)}>×</button>
-                  </div>
-                ))}
               </div>
             )}
             <div className="flex items-center gap-3 text-xs text-gray-500">

@@ -24,3 +24,4 @@ const lines = [
 
 fs.writeFileSync(envLocal, lines.join('\n'));
 console.log('Created .env.local with development defaults.');
+

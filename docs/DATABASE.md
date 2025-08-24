@@ -17,3 +17,4 @@
 - UI: `GET /api/health` verifică conectivitatea minimală la Supabase
 
 
+

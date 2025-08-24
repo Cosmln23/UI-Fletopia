@@ -29,3 +29,4 @@ Secrets necesare în repo (Settings → Secrets → Actions):
   - No direct pushes to `main`
 
 
+

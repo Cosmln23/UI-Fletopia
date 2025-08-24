@@ -32,3 +32,4 @@ CREATE INDEX IF NOT EXISTS idx_chat_messages_deal_created_at
 COMMIT;
 
 
+

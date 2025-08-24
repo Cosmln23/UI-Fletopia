@@ -77,3 +77,4 @@ export const ScoutBar: React.FC<ScoutBarProps> = ({
 };
 
 
+
