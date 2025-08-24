@@ -27,30 +27,20 @@ export function createServerClient(): TypedClient {
         flowType: 'pkce',
       },
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+        getAll() {
+          return cookieStore.getAll().map((c) => ({ name: c.name, value: c.value }));
         },
-        set(name: string, value: string, options: Parameters<typeof cookieStore.set>[0] & { domain?: string }) {
-          cookieStore.set({
-            name,
-            value,
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: secureCookie,
-            path: '/',
-            ...options,
-          });
-        },
-        remove(name: string, options?: Parameters<typeof cookieStore.set>[0]) {
-          cookieStore.set({
-            name,
-            value: '',
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: secureCookie,
-            path: '/',
-            maxAge: 0,
-            ...options,
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set({
+              name,
+              value,
+              httpOnly: true,
+              sameSite: 'lax',
+              secure: secureCookie,
+              path: '/',
+              ...options,
+            });
           });
         },
       },
@@ -84,30 +74,20 @@ export function createMiddlewareClient(req: NextRequest, res: NextResponse): Typ
         flowType: 'pkce',
       },
       cookies: {
-        get(name: string) {
-          return req.cookies.get(name)?.value;
+        getAll() {
+          return req.cookies.getAll().map((c) => ({ name: c.name, value: c.value }));
         },
-        set(name: string, value: string, options) {
-          res.cookies.set({
-            name,
-            value,
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: secureCookie,
-            path: '/',
-            ...options,
-          });
-        },
-        remove(name: string, options) {
-          res.cookies.set({
-            name,
-            value: '',
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: secureCookie,
-            path: '/',
-            maxAge: 0,
-            ...options,
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            res.cookies.set({
+              name,
+              value,
+              httpOnly: true,
+              sameSite: 'lax',
+              secure: secureCookie,
+              path: '/',
+              ...options,
+            });
           });
         },
       },

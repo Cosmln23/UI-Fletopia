@@ -66,8 +66,8 @@ export default function MarketplacePage() {
 
   // Ensure sort switches to scout when active, and revert on reset
   useEffect(() => {
-    if (isScoutActive && filters.sort !== "scout") {
-      setFilters({ ...filters, sort: "scout" });
+    if (isScoutActive) {
+      setFilters((prev) => (prev.sort === "scout" ? prev : { ...prev, sort: "scout" }));
     }
   }, [isScoutActive]);
 
