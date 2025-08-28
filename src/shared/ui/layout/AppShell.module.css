@@ -7,6 +7,9 @@
 
 .main {
 	flex: 1 1 auto;
+	/* Ensure content is not hidden behind fixed TopNavbar/BottomNav */
+	padding-top: 64px;
+	padding-bottom: 72px;
 }
 
 .container {
