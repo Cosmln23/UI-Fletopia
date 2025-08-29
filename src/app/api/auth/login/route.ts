@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
 import { loginSchema } from '@/lib/validation/auth';
 
 const AUTH_ROUTES = new Set<string>(['/login', '/signup', '/auth/callback']);
@@ -13,7 +12,9 @@ function sanitizeRedirect(input: unknown): string {
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = createServerClient();
+  // Lazy import to avoid build-time env validation
+  const mod = await import('@/lib/supabase/server');
+  const supabase = mod.createServerClient();
   const formData = await req.formData();
 
   const emailEntry = formData.get('email');
