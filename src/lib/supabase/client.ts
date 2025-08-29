@@ -1,5 +1,4 @@
 import { createClient, type SupabaseClient, type AuthChangeEvent, type Session } from '@supabase/supabase-js';
-import { env } from '@/lib/env';
 import type { Database } from '@/lib/supabase/types';
 
 let browserClient: SupabaseClient<Database> | null = null;
@@ -31,9 +30,12 @@ let browserClient: SupabaseClient<Database> | null = null;
 export function createBrowserClient(): SupabaseClient<Database> {
   if (browserClient) return browserClient;
 
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
   browserClient = createClient<Database>(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    url,
+    anon,
     {
       auth: {
         persistSession: true,
