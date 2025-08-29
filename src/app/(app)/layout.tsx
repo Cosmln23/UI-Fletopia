@@ -3,7 +3,7 @@ import { BottomNav, FooterSection } from '@/shared/ui';
 import { TopNavbar } from '@/shared/ui/top-navbar/TopNavbar';
 import { AppShell } from '@/shared/ui/layout/AppShell';
 
-export default async function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <AppShell
       header={

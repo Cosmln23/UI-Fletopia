@@ -27,13 +27,20 @@ export default function SignupPage() {
     setFormError(null);
     setFieldErrors({});
     const form = new FormData(e.currentTarget);
-    const email = String(form.get('email') || '');
-    const password = String(form.get('password') || '');
-    const confirm = String(form.get('confirm') || '');
-    const userType = String(form.get('userType') || '');
+    const emailEntry = form.get('email');
+    const passwordEntry = form.get('password');
+    const confirmEntry = form.get('confirm');
+    const userTypeEntry = form.get('userType');
     const termsAccepted = form.get('termsAccepted') === 'on';
-    const full_name = String(form.get('full_name') || '').trim() || undefined;
-    const company_name = String(form.get('company_name') || '').trim() || undefined;
+    const fullNameEntry = form.get('full_name');
+    const companyNameEntry = form.get('company_name');
+
+    const email = typeof emailEntry === 'string' ? emailEntry : '';
+    const password = typeof passwordEntry === 'string' ? passwordEntry : '';
+    const confirm = typeof confirmEntry === 'string' ? confirmEntry : '';
+    const userType = typeof userTypeEntry === 'string' ? userTypeEntry : '';
+    const full_name = typeof fullNameEntry === 'string' && fullNameEntry.trim() ? fullNameEntry.trim() : undefined;
+    const company_name = typeof companyNameEntry === 'string' && companyNameEntry.trim() ? companyNameEntry.trim() : undefined;
 
     const parsed = signupSchema.safeParse({ email, password, confirm, userType, termsAccepted, full_name, company_name });
     if (!parsed.success) {
@@ -71,7 +78,7 @@ export default function SignupPage() {
       }
       // Success: instruct user to confirm email
       router.replace(`/login?error=${encodeURIComponent('Verifică email-ul pentru confirmare')}&redirect=${encodeURIComponent(redirect)}`);
-    } catch (err) {
+    } catch {
       setFormError('A apărut o eroare. Încearcă din nou.');
     } finally {
       setLoading(false);
@@ -79,7 +86,7 @@ export default function SignupPage() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="glass-border rounded-xl p-5 text-gray-100">
+    <form onSubmit={(e) => { void onSubmit(e); }} className="glass-border rounded-xl p-5 text-gray-100">
       <div className="mb-4">
         <Input name="email" type="email" label="Email" placeholder="you@example.com" error={fieldErrors.email} required />
       </div>

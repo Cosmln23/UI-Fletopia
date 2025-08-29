@@ -56,7 +56,7 @@ export default function LoginPage() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="glass-border rounded-xl p-5 text-gray-100">
+    <form onSubmit={(e) => { void onSubmit(e); }} className="glass-border rounded-xl p-5 text-gray-100">
       <div className="mb-4">
         <Input name="email" type="email" label="Email" placeholder="you@example.com" error={fieldErrors.email} required />
       </div>

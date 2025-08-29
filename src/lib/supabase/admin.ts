@@ -12,7 +12,7 @@ function assertServerContext() {
 
 export function createAdminClient(serviceRoleKey?: string): AdminClient {
   assertServerContext();
-  const key = serviceRoleKey ?? env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = serviceRoleKey ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!key) {
     throw new Error('SUPABASE_SERVICE_ROLE_KEY is required for admin client.');
   }
