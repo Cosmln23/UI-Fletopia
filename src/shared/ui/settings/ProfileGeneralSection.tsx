@@ -73,8 +73,6 @@ export const ProfileGeneralSection: React.FC = () => {
     const handler = (e: BeforeUnloadEvent) => {
       if (!isDirty) return;
       e.preventDefault();
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      (e as any).returnValue = '';
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
@@ -122,7 +120,7 @@ export const ProfileGeneralSection: React.FC = () => {
     setFormError(null);
   }
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSuccess(null);
     setFormError(null);
