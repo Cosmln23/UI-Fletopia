@@ -32,7 +32,9 @@ export function createServerClient(): TypedClient {
           return store.getAll().map((c) => ({ name: c.name, value: c.value }));
         },
         // In RSC, cookies cannot be mutated. We no-op here to avoid runtime errors.
-        async setAll(_cookiesToSet) {
+        setAll(cookiesToSet) {
+          // explicitly reference to satisfy no-unused-vars rule
+          void cookiesToSet;
           return;
         },
       },

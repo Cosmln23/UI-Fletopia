@@ -101,7 +101,7 @@ export function onAuthStateChanged(
  * and redirects to home. Provides a reliable, centralized way to sign out
  * from any client component.
  */
-export async function logout(): Promise<void> {
+export function logout(): void {
   if (typeof window === 'undefined') return;
   // Use server route to sign out and clear cookies reliably
   window.location.href = '/api/auth/signout';
