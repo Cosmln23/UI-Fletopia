@@ -97,6 +97,17 @@ export function onAuthStateChanged(
 }
 
 /**
+ * Initiate logout by navigating to the server route that clears session cookies
+ * and redirects to home. Provides a reliable, centralized way to sign out
+ * from any client component.
+ */
+export async function logout(): Promise<void> {
+  if (typeof window === 'undefined') return;
+  // Use server route to sign out and clear cookies reliably
+  window.location.href = '/api/auth/signout';
+}
+
+/**
  * Utilities
  */
 export function isLikelyNetworkError(err: unknown): boolean {

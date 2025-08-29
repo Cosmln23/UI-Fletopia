@@ -1,6 +1,20 @@
 import React from "react";
 import styles from "./TopNavbar.module.css";
 import { getServerUser } from "@/lib/supabase/server";
+import Link from "next/link";
+
+function LogoutButton() {
+  return (
+    <form action="/api/auth/signout" method="get">
+      <button
+        type="submit"
+        className="w-full text-left block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded"
+      >
+        Deconectare
+      </button>
+    </form>
+  );
+}
 
 export type TopNavbarProps = {
   brand?: string;
@@ -31,16 +45,16 @@ export async function TopNavbar({ brand = "Fleetopia" }: TopNavbarProps) {
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="user" className="lucide lucide-user w-4 h-4" style={{ strokeWidth: 1.5 }}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </button>
                 <div className="hidden group-hover:block group-focus-within:block absolute right-0 top-full min-w-[160px] glass-border rounded-lg p-2 text-sm">
-                  <a href="/settings" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Setări</a>
-                  <a href="/faq" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Ajutor și FAQ</a>
-                  <a href="/api/auth/signout" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Deconectare</a>
+                  <Link href="/settings" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Setări</Link>
+                  <Link href="/faq" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Ajutor și FAQ</Link>
+                  <LogoutButton />
                 </div>
               </div>
             </>
           ) : (
             <div className="flex items-center gap-4">
-              <a href="/login" className="hover:text-white transition-colors">Login</a>
-              <a href="/signup" className="hover:text-white transition-colors">Signup</a>
+              <Link href="/login" className="hover:text-white transition-colors">Login</Link>
+              <Link href="/signup" className="hover:text-white transition-colors">Signup</Link>
             </div>
           )}
         </nav>
