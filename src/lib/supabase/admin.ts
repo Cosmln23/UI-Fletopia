@@ -29,19 +29,21 @@ export function auditLog(event: string, details: Record<string, unknown>) {
 }
 
 // Helper: update user subscription status (for Stripe webhooks)
-export async function updateUserSubscription(_params: {
+export async function updateUserSubscription(params: {
   userId: string;
   status: Database['public']['Enums']['subscription_status'];
 }) {
   // Stubbed to avoid type inconsistencies with handcrafted Database typings.
-  // Implement real admin operation when backend wiring is finalized.
-  return;
+  // Mark parameters as used and keep async contract for future implementation.
+  void params;
+  await Promise.resolve();
 }
 
 // Helper: bulk insert loads (example seeding op)
-export async function bulkInsertLoads(_rows: Database['public']['Tables']['loads']['Insert'][]) {
+export async function bulkInsertLoads(rows: Database['public']['Tables']['loads']['Insert'][]) {
   // Stubbed to avoid type inconsistencies with handcrafted Database typings.
-  return;
+  void rows;
+  await Promise.resolve();
 }
 
 // Notes on rate limiting & retries: callers (webhooks/cron) should handle retries with backoff.
