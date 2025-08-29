@@ -71,10 +71,10 @@ export const ProfileGeneralSection: React.FC = () => {
   // Unsaved changes warning
   React.useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (isDirty) {
-        e.preventDefault();
-        e.returnValue = "Aveți modificări nesalvate.";
-      }
+      if (!isDirty) return;
+      e.preventDefault();
+      // @ts-expect-error: returnValue is still required in some browsers
+      e.returnValue = "";
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
@@ -82,7 +82,7 @@ export const ProfileGeneralSection: React.FC = () => {
 
   // Load current profile
   React.useEffect(() => {
-    (async () => {
+    void (async () => {
       try {
         setLoading(true);
         const { data: userData, error: userErr } = await supabase.auth.getUser();
@@ -106,7 +106,7 @@ export const ProfileGeneralSection: React.FC = () => {
         };
         setValues(next);
         setInitial(next);
-      } catch (e: unknown) {
+      } catch {
         setFormError("Nu s-au putut încărca datele profilului.");
       } finally {
         setLoading(false);
@@ -141,7 +141,7 @@ export const ProfileGeneralSection: React.FC = () => {
       // Optimistic UX – server action integration va fi adăugată ulterior
       setInitial(parsed.data);
       setSuccess("Salvat cu succes.");
-    } catch (err: unknown) {
+    } catch {
       setFormError("A apărut o eroare la salvare. Încercați din nou.");
     } finally {
       setSaving(false);

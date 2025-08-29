@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { FooterSection, SettingsSidebar, ProfileGeneralSection, CompanyVerificationSection, OperationalAISection, SubscriptionBillingSection, PreferencesSecuritySection } from "@/shared/ui";
 
 type SettingsKey = Parameters<typeof SettingsSidebar>[0]["active"];
@@ -36,7 +37,7 @@ export default function SettingsPage() {
   const breadcrumb = (
     <div className="mb-8">
       <nav className="text-sm text-gray-400 mb-1">
-        <a href="/" className="hover:text-white">Home</a>
+        <Link href="/" className="hover:text-white">Home</Link>
         <span className="mx-2">/</span>
         <span className="text-gray-300">Settings</span>
         <span className="mx-2">/</span>
