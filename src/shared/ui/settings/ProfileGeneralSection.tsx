@@ -166,7 +166,7 @@ export const ProfileGeneralSection: React.FC = () => {
               placeholder="Introduceți numele"
               value={values.fullName}
               onChange={(e) => setField("fullName", e.target.value)}
-              error={errors.fullName}
+              {...(errors.fullName ? { error: errors.fullName } : {})}
               required
             />
             <div>
@@ -184,7 +184,7 @@ export const ProfileGeneralSection: React.FC = () => {
               placeholder="Ex: +40 712 345 678"
               value={values.phone ?? ""}
               onChange={(e) => setField("phone", e.target.value)}
-              error={errors.phone}
+              {...(errors.phone ? { error: errors.phone } : {})}
             />
             <Input
               label="Rol utilizator"
@@ -199,7 +199,7 @@ export const ProfileGeneralSection: React.FC = () => {
               placeholder="Numele companiei (opțional)"
               value={values.companyName ?? ""}
               onChange={(e) => setField("companyName", e.target.value)}
-              error={errors.companyName}
+              {...(errors.companyName ? { error: errors.companyName } : {})}
             />
             <Input
               label="Adresă bază operațiuni"
@@ -207,7 +207,7 @@ export const ProfileGeneralSection: React.FC = () => {
               helperText="Sugestie: începeți să tastați adresa (auto-complete în curând)"
               value={values.homeBaseAddress ?? ""}
               onChange={(e) => setField("homeBaseAddress", e.target.value)}
-              error={errors.homeBaseAddress}
+              {...(errors.homeBaseAddress ? { error: errors.homeBaseAddress } : {})}
             />
           </div>
 
