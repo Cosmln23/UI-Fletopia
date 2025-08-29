@@ -22,7 +22,7 @@ export function createServerClient(): TypedClient {
     {
       auth: {
         persistSession: false,
-        autoRefreshToken: true,
+        autoRefreshToken: false,
         detectSessionInUrl: false,
         flowType: 'pkce',
       },
@@ -31,19 +31,9 @@ export function createServerClient(): TypedClient {
           const store = await cookies();
           return store.getAll().map((c) => ({ name: c.name, value: c.value }));
         },
-        async setAll(cookiesToSet) {
-          const store = await cookies();
-          cookiesToSet.forEach(({ name, value, options }) => {
-            store.set({
-              name,
-              value,
-              httpOnly: true,
-              sameSite: 'lax',
-              secure: secureCookie,
-              path: '/',
-              ...options,
-            });
-          });
+        // In RSC, cookies cannot be mutated. We no-op here to avoid runtime errors.
+        async setAll(_cookiesToSet) {
+          return;
         },
       },
       global: { headers: { 'X-Client-Context': 'server' } },
@@ -73,7 +63,7 @@ export function createMiddlewareClient(req: NextRequest, res: NextResponse): Typ
     {
       auth: {
         persistSession: false,
-        autoRefreshToken: true,
+        autoRefreshToken: false,
         detectSessionInUrl: false,
         flowType: 'pkce',
       },
