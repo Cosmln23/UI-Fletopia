@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   // Defer Supabase import to runtime to avoid build-time env validation
   try {
     const mod = await import('@/lib/supabase/server');
-    const supabase = mod.createServerClient();
+    const supabase = mod.createRouteHandlerClient(req, res);
     await supabase.auth.signOut();
   } catch {
     // Ignore; best-effort signout. Cookie cleared and redirect performed.
