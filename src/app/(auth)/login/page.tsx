@@ -58,10 +58,10 @@ export default function LoginPage() {
   return (
     <form onSubmit={(e) => { void onSubmit(e); }} className="glass-border rounded-xl p-5 text-gray-100">
       <div className="mb-4">
-        <Input name="email" type="email" label="Email" placeholder="you@example.com" error={fieldErrors.email} required />
+        <Input name="email" type="email" label="Email" placeholder="you@example.com" required {...(fieldErrors.email ? { error: fieldErrors.email } : {})} />
       </div>
       <div className="mb-2">
-        <Input name="password" type="password" label="Parolă" placeholder="••••••••" error={fieldErrors.password} required />
+        <Input name="password" type="password" label="Parolă" placeholder="••••••••" required {...(fieldErrors.password ? { error: fieldErrors.password } : {})} />
       </div>
       <div className="flex items-center justify-between mb-4 text-sm">
         <label className="flex items-center gap-2 cursor-pointer">

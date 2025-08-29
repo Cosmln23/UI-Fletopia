@@ -88,7 +88,7 @@ export default function SignupPage() {
   return (
     <form onSubmit={(e) => { void onSubmit(e); }} className="glass-border rounded-xl p-5 text-gray-100">
       <div className="mb-4">
-        <Input name="email" type="email" label="Email" placeholder="you@example.com" error={fieldErrors.email} required />
+        <Input name="email" type="email" label="Email" placeholder="you@example.com" required {...(fieldErrors.email ? { error: fieldErrors.email } : {})} />
       </div>
       <div className="mb-2">
         <Input
@@ -96,9 +96,9 @@ export default function SignupPage() {
           type="password"
           label="Parolă"
           placeholder="••••••••"
-          error={fieldErrors.password}
           onChange={(e) => setPasswordStrength(estimateStrength(e.currentTarget.value))}
           required
+          {...(fieldErrors.password ? { error: fieldErrors.password } : {})}
         />
         {passwordStrength ? (
           <div className="text-xs mt-1" aria-live="polite">
@@ -107,7 +107,7 @@ export default function SignupPage() {
         ) : null}
       </div>
       <div className="mb-2">
-        <Input name="confirm" type="password" label="Confirmă parola" placeholder="••••••••" error={fieldErrors.confirm} required />
+        <Input name="confirm" type="password" label="Confirmă parola" placeholder="••••••••" required {...(fieldErrors.confirm ? { error: fieldErrors.confirm } : {})} />
       </div>
       <div className="mb-3">
         <label className="block text-sm text-gray-300 mb-1">Tip utilizator</label>

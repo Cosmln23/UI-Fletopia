@@ -1,5 +1,6 @@
 import React from "react";
-import { TopNavbar, BottomNav } from "../../shared/ui";
+import { BottomNav } from "../../shared/ui";
+import { TopNavbar } from "../../shared/ui/top-navbar/TopNavbar";
 
 export default function FAQPage() {
   return (
