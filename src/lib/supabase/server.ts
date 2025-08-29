@@ -2,12 +2,11 @@ import { createServerClient as createSSRClient } from '@supabase/ssr';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import type { NextRequest, NextResponse } from 'next/server';
-import { env } from '@/lib/env';
 import type { Database } from '@/lib/supabase/types';
 
 type TypedClient = SupabaseClient<Database>;
 
-const secureCookie = (env.NEXT_PUBLIC_APP_ENV === 'production');
+const secureCookie = (process.env.NEXT_PUBLIC_APP_ENV === 'production');
 
 /**
  * createServerClient
@@ -15,9 +14,11 @@ const secureCookie = (env.NEXT_PUBLIC_APP_ENV === 'production');
  * - Uses Next.js App Router cookies() API to manage auth session.
  */
 export function createServerClient(): TypedClient {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
   const client = createSSRClient<Database>(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    url,
+    anon,
     {
       auth: {
         persistSession: false,
@@ -64,9 +65,11 @@ export function createServerActionClient(): TypedClient {
  * - For Next.js Middleware (edge). Mutates response cookies for session persistence.
  */
 export function createMiddlewareClient(req: NextRequest, res: NextResponse): TypedClient {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
   const client = createSSRClient<Database>(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    url,
+    anon,
     {
       auth: {
         persistSession: false,
@@ -102,6 +105,10 @@ export function createMiddlewareClient(req: NextRequest, res: NextResponse): Typ
  * Helper: fetch current user on server, RLS-aware.
  */
 export async function getServerUser() {
+  // If env is missing at build/prerender, avoid throwing and return anonymous
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return { user: null, error: null } as const;
+  }
   const supabase = createServerClient();
   const { data, error } = await supabase.auth.getUser();
   if (error) return { user: null, error } as const;
