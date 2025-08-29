@@ -6,6 +6,8 @@ export type TopNavbarProps = {
   brand?: string;
 };
 
+export const dynamic = 'force-dynamic';
+
 export async function TopNavbar({ brand = "Fleetopia" }: TopNavbarProps) {
   const { user } = await getServerUser();
   const isAuthenticated = Boolean(user);
