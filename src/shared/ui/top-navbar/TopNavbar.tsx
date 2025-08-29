@@ -27,7 +27,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ brand = "Fleetopia" }) => 
             <div className="hidden group-hover:block group-focus-within:block absolute right-0 top-full min-w-[160px] glass-border rounded-lg p-2 text-sm">
               <a href="/settings" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Setări</a>
               <a href="/faq" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Ajutor și FAQ</a>
-              <a href="#logout" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Deconectare</a>
+              <a href="/api/auth/signout" className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded">Deconectare</a>
             </div>
           </div>
         </nav>
