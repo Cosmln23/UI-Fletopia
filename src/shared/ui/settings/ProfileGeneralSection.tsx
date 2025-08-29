@@ -73,8 +73,8 @@ export const ProfileGeneralSection: React.FC = () => {
     const handler = (e: BeforeUnloadEvent) => {
       if (!isDirty) return;
       e.preventDefault();
-      // @ts-expect-error: returnValue is still required in some browsers
-      e.returnValue = "";
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      (e as any).returnValue = '';
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
