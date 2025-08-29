@@ -22,16 +22,21 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  const pathname = req.nextUrl.pathname;
+
+  // Performance: avoid auth calls on routes that don't need them
+  if (!isProtectedRoute(pathname) && !AUTH_ROUTES.has(pathname)) {
+    return NextResponse.next();
+  }
+
   const res = NextResponse.next();
   const supabase = createMiddlewareClient(req, res);
 
-  // Trigger session fetch/refresh; cookies will be updated on `res` when needed
+  // Trigger session fetch/refresh only when relevant; cookies will be updated on `res` when needed
   const {
     data: { session },
     error,
   } = await supabase.auth.getSession();
-
-  const pathname = req.nextUrl.pathname;
 
   // If user is authenticated, prevent access to auth routes (login/signup)
   if (session?.user && AUTH_ROUTES.has(pathname)) {
@@ -45,7 +50,10 @@ export async function middleware(req: NextRequest) {
   if (!session?.user && isProtectedRoute(pathname)) {
     const url = req.nextUrl.clone();
     url.pathname = '/login';
+    // Preserve intended destination (including deep links and query)
     url.searchParams.set('redirect', req.nextUrl.pathname + req.nextUrl.search);
+    // Surface a standard message to improve UX around expired sessions
+    if (error) url.searchParams.set('error', 'session_expired');
     return NextResponse.redirect(url);
   }
 
@@ -63,7 +71,7 @@ export const config = {
     // - favicon.ico (favicon file)
     // - api (API routes)
     // - public files by extension (basic patterns)
-    '/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:png|jpg|jpeg|svg|gif|ico|webp|avif|css|js|map)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/|.*\.(?:png|jpg|jpeg|svg|gif|ico|webp|avif|css|js|map)$).*)',
   ],
 };
 

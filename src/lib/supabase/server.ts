@@ -22,7 +22,7 @@ export function createServerClient(): TypedClient {
     {
       auth: {
         persistSession: false,
-        autoRefreshToken: true,
+        autoRefreshToken: false,
         detectSessionInUrl: false,
         flowType: 'pkce',
       },
@@ -31,19 +31,11 @@ export function createServerClient(): TypedClient {
           const store = await cookies();
           return store.getAll().map((c) => ({ name: c.name, value: c.value }));
         },
-        async setAll(cookiesToSet) {
-          const store = await cookies();
-          cookiesToSet.forEach(({ name, value, options }) => {
-            store.set({
-              name,
-              value,
-              httpOnly: true,
-              sameSite: 'lax',
-              secure: secureCookie,
-              path: '/',
-              ...options,
-            });
-          });
+        // In RSC, cookies cannot be mutated. We no-op here to avoid runtime errors.
+        setAll(cookiesToSet) {
+          // explicitly reference to satisfy no-unused-vars rule
+          void cookiesToSet;
+          return;
         },
       },
       global: { headers: { 'X-Client-Context': 'server' } },
@@ -73,7 +65,7 @@ export function createMiddlewareClient(req: NextRequest, res: NextResponse): Typ
     {
       auth: {
         persistSession: false,
-        autoRefreshToken: true,
+        autoRefreshToken: false,
         detectSessionInUrl: false,
         flowType: 'pkce',
       },
@@ -96,6 +88,47 @@ export function createMiddlewareClient(req: NextRequest, res: NextResponse): Typ
         },
       },
       global: { headers: { 'X-Client-Context': 'middleware' } },
+    }
+  );
+  return client;
+}
+
+/**
+ * createRouteHandlerClient
+ * - For Route Handlers (app/api/*). Allows cookie mutation on the response.
+ */
+export function createRouteHandlerClient(req: NextRequest, res: NextResponse): TypedClient {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+  const client = createSSRClient<Database>(
+    url,
+    anon,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        flowType: 'pkce',
+      },
+      cookies: {
+        getAll() {
+          return req.cookies.getAll().map((c) => ({ name: c.name, value: c.value }));
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            res.cookies.set({
+              name,
+              value,
+              httpOnly: true,
+              sameSite: 'lax',
+              secure: secureCookie,
+              path: '/',
+              ...options,
+            });
+          });
+        },
+      },
+      global: { headers: { 'X-Client-Context': 'route' } },
     }
   );
   return client;
