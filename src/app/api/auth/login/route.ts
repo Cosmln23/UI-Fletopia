@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import type { Database } from '@/lib/supabase/types';
 import { loginSchema } from '@/lib/validation/auth';
 
 const AUTH_ROUTES = new Set<string>(['/login', '/signup', '/auth/callback']);
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
         .from('profiles')
         .select('role')
         .eq('user_id', user.id)
-        .maybeSingle();
+        .maybeSingle<{ role: Database['public']['Enums']['user_role'] }>();
       if (profile?.role === 'admin') fallback = '/dashboard';
       else if (profile?.role === 'shipper') fallback = '/marketplace';
       else fallback = '/marketplace';
