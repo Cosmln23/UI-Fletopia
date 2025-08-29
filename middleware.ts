@@ -50,7 +50,10 @@ export async function middleware(req: NextRequest) {
   if (!session?.user && isProtectedRoute(pathname)) {
     const url = req.nextUrl.clone();
     url.pathname = '/login';
+    // Preserve intended destination (including deep links and query)
     url.searchParams.set('redirect', req.nextUrl.pathname + req.nextUrl.search);
+    // Surface a standard message to improve UX around expired sessions
+    if (error) url.searchParams.set('error', 'session_expired');
     return NextResponse.redirect(url);
   }
 
@@ -68,7 +71,7 @@ export const config = {
     // - favicon.ico (favicon file)
     // - api (API routes)
     // - public files by extension (basic patterns)
-    '/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:png|jpg|jpeg|svg|gif|ico|webp|avif|css|js|map)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/|.*\.(?:png|jpg|jpeg|svg|gif|ico|webp|avif|css|js|map)$).*)',
   ],
 };
 
