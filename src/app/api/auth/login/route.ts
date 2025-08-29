@@ -12,9 +12,6 @@ function sanitizeRedirect(input: unknown): string {
 }
 
 export async function POST(req: NextRequest) {
-  // Lazy import to avoid build-time env validation
-  const mod = await import('@/lib/supabase/server');
-  const supabase = mod.createServerClient();
   const formData = await req.formData();
 
   const emailEntry = formData.get('email');
@@ -30,6 +27,7 @@ export async function POST(req: NextRequest) {
 
   const origin = new URL(req.url).origin;
   const redirectTo = sanitizeRedirect(redirectEntry);
+  const res = NextResponse.redirect(new URL(redirectTo, origin), { status: 303 });
 
   if (!parsed.success) {
     const first = parsed.error.issues[0]?.message || 'Invalid credentials';
@@ -39,11 +37,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.redirect(url, { status: 303 });
   }
 
-  const { email, password, remember } = parsed.data;
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  const res = NextResponse.redirect(new URL(redirectTo, origin), { status: 303 });
   // set remember cookie for server cookie lifetime decisions
+  const { email, password, remember } = parsed.data;
   res.cookies.set('ft_remember_me', remember ? '1' : '0', { path: '/' });
+  // Create supabase client bound to req/res to persist cookies
+  const mod = await import('@/lib/supabase/server');
+  const supabase = mod.createRouteHandlerClient(req, res);
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     const url = new URL('/login', origin);
     url.searchParams.set('error', error.message);
