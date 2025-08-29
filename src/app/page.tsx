@@ -1,30 +1,14 @@
-"use client";
-import React, { useEffect } from "react";
-import { TopNavbar, BottomNav, HeroSection, QuickActionsSection, HowItWorksSection, TestimonialsSection, FooterSection } from "../shared/ui";
+import React from "react";
+import { BottomNav } from "../shared/ui";
+import { TopNavbar } from "../shared/ui/top-navbar/TopNavbar";
+import HomeClient from "./home.client";
 
-export default function Home() {
-  useEffect(() => {
-    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" } as IntersectionObserverInit;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in-view");
-        }
-      });
-    }, observerOptions);
-    document.querySelectorAll(".animate-on-scroll").forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-
+export default async function Home() {
   return (
     <div className="antialiased text-gray-100 bg-black pb-20">
       <TopNavbar />
       <BottomNav />
-      <HeroSection />
-      <QuickActionsSection />
-      <HowItWorksSection />
-      <TestimonialsSection />
-      <FooterSection />
+      <HomeClient />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-export { TopNavbar } from "./top-navbar/TopNavbar";
+// Note: TopNavbar is a Server Component; import it directly where needed to avoid client bundling
 export { BottomNav } from "./bottom-nav/BottomNav";
 export { HeroSection } from "./hero/HeroSection";
 export { QuickActionsSection } from "./quick-actions/QuickActionsSection";

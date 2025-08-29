@@ -2,7 +2,6 @@
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Input, Button } from '@/components/ui';
-import { createBrowserClient } from '@/lib/supabase/client';
 import { loginSchema } from '@/lib/validation/auth';
 
 export default function LoginPage() {
@@ -39,16 +38,17 @@ export default function LoginPage() {
 
     try {
       setLoading(true);
-      // Remember me cookie (used by server/middleware cookie strategy)
-      document.cookie = `ft_remember_me=${remember ? '1' : '0'}; path=/`;
-      const supabase = createBrowserClient();
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        setFormError(error.message);
+      // Submit to server route to establish SSR cookies immediately
+      const form = new FormData();
+      form.set('email', email);
+      form.set('password', password);
+      form.set('remember', remember ? 'on' : '');
+      form.set('redirect', redirect);
+      const resp = await fetch('/api/auth/login', { method: 'POST', body: form });
+      if (resp.redirected) {
+        router.replace(resp.url);
         return;
       }
-      router.replace(redirect);
-    } catch (err) {
       setFormError('A apărut o eroare. Încearcă din nou.');
     } finally {
       setLoading(false);
