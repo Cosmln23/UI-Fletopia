@@ -10,9 +10,10 @@ export type MarketplaceTabsProps = {
   onAddCargo?: () => void;
   role?: UserRole;
   counts?: Partial<Record<TabKey, number>>;
+  onDeleteCargo?: () => void;
 };
 
-export const MarketplaceTabs: React.FC<MarketplaceTabsProps> = ({ active, onChange, onAddCargo, role = "carrier", counts }) => {
+export const MarketplaceTabs: React.FC<MarketplaceTabsProps> = ({ active, onChange, onAddCargo, role = "carrier", counts, onDeleteCargo }) => {
   const baseTabs: { key: TabKey; label: string; visible: boolean }[] = [
     { key: "all-offers", label: "ALL LOADS", visible: true },
     { key: "my-cargo", label: "MY CARGO", visible: role !== "carrier" },
@@ -43,6 +44,17 @@ export const MarketplaceTabs: React.FC<MarketplaceTabsProps> = ({ active, onChan
         })}
       </div>
       <div className="flex items-center gap-4">
+        {role === 'shipper' && active === 'my-cargo' ? (
+          <button
+            type="button"
+            className="hover:text-white transition-colors flex items-center gap-2 text-sm text-gray-400 pt-2 pr-6 pb-2 pl-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => onDeleteCargo?.()}
+            disabled={!((counts?.['my-cargo'] ?? 0) > 0)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" style={{ strokeWidth: 1.5 }}><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete
+          </button>
+        ) : null}
         <button className="glass-border hover:bg-white/5 transition-all flex gap-2 text-sm font-medium text-white bg-gray-900 rounded-lg pt-2 pr-6 pb-2 pl-6 items-center" type="button" onClick={() => onAddCargo?.()}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="plus" className="w-4 h-4" style={{ strokeWidth: 1.5 }}><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
           Post Cargo
