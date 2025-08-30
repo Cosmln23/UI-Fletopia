@@ -116,7 +116,7 @@ async function readCache(
     console.warn('[geocoding] cache read error', error.message);
     return null;
   }
-  if (!data || data.lat == null || data.lng == null) return null;
+  if (data?.lat == null || data?.lng == null) return null;
   const value: GeocodeResult = {
     lat: data.lat,
     lng: data.lng,

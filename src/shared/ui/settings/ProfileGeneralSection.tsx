@@ -170,7 +170,7 @@ export const ProfileGeneralSection: React.FC = () => {
       {formError ? <div className="text-sm text-red-400 mb-4">{formError}</div> : null}
       {success ? <div className="text-sm text-emerald-400 mb-4">{success}</div> : null}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => { void handleSubmit(e); }}>
         <fieldset disabled={loading || saving} className="space-y-6">
         <div className="grid md:grid-cols-2 gap-4">
             <Input
