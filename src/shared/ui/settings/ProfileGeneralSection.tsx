@@ -143,7 +143,8 @@ export const ProfileGeneralSection: React.FC = () => {
       if (parsed.data.phone) form.set('phone', parsed.data.phone);
 
       const resp = await fetch('/api/settings/profile/update', { method: 'POST', body: form });
-      const json: { ok?: boolean; fieldErrors?: Partial<Record<keyof FormState, string>>; message?: string } = await resp.json();
+      const raw: unknown = await resp.json();
+      const json = (typeof raw === 'object' && raw !== null ? raw as { ok?: boolean; fieldErrors?: Partial<Record<keyof FormState, string>>; message?: string } : { ok: false });
       if (!resp.ok || !json.ok) {
         const fe: Partial<Record<keyof FormState, string>> = json.fieldErrors ?? {};
         setErrors((prev) => ({ ...prev, ...fe }));

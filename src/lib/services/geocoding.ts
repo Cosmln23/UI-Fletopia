@@ -21,7 +21,7 @@ export type GeocodeResult = {
 
 const MEMORY_TTL_MS = 5 * 60 * 1000; // 5 minutes
 const DB_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
-const memoryCache: Map<string, { exp: number; value: GeocodeResult }> = new Map();
+const memoryCache: Map<string, { exp: number; value: GeocodeResult }> = new Map<string, { exp: number; value: GeocodeResult }>();
 
 function assertServer(): void {
   if (typeof window !== 'undefined') {
@@ -44,7 +44,8 @@ export function hashAddress(address: string): string {
 
 function getGoogleApiKey(): string | null {
   const key = process.env.GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_GEOCODING_KEY || null;
-  return key && key.trim() ? key : null;
+  const trimmed = key?.trim();
+  return trimmed ? trimmed : null;
 }
 
 async function fetchFromGoogle(address: string): Promise<GeocodeResult | null> {
@@ -68,21 +69,22 @@ async function fetchFromGoogle(address: string): Promise<GeocodeResult | null> {
     geometry?: { location?: { lat?: number; lng?: number } };
   };
   type GoogleResponse = { status?: string; results?: GoogleResult[] };
-  const data: GoogleResponse = await resp.json();
-  const status: string = data && data.status ? data.status : 'UNKNOWN_ERROR';
+  const raw: unknown = await resp.json();
+  const data: GoogleResponse = (typeof raw === 'object' && raw !== null) ? (raw as GoogleResponse) : {};
+  const status: string = data.status ?? 'UNKNOWN_ERROR';
   if (status !== 'OK') {
     console.warn('[geocoding] Google API status', status);
     return null;
   }
   const result = Array.isArray(data.results) ? data.results[0] : undefined;
-  const loc = result && result.geometry && result.geometry.location ? result.geometry.location : undefined;
+  const loc = result?.geometry?.location;
   const lat = typeof loc?.lat === 'number' ? loc.lat : undefined;
   const lng = typeof loc?.lng === 'number' ? loc.lng : undefined;
   if (lat == null || lng == null) return null;
   const parsed: GeocodeResult = {
     lat,
     lng,
-    formattedAddress: result && result.formatted_address ? result.formatted_address : undefined,
+    formattedAddress: result?.formatted_address ?? undefined,
     provider: 'google',
     raw: result,
   };
@@ -95,7 +97,7 @@ async function readCache(
 ): Promise<GeocodeResult | null> {
   const now = Date.now();
   const mem = memoryCache.get(normalizedAddress);
-  if (mem && mem.exp > now) {
+  if (mem?.exp && mem.exp > now) {
     return mem.value;
   }
 
