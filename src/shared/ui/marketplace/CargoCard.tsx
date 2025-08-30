@@ -58,6 +58,17 @@ export const CargoCard: React.FC<CargoCardProps> = ({
     }
   }
 
+  function handleView(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    if (onView) onView(id);
+    else if (onClick) onClick(id);
+  }
+
+  function handleBid(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    if (onBid) onBid(id);
+  }
+
   return (
     <div
       className={`${styles.card} glass-card hover:bg-white/5 transition-all rounded-xl pt-6 pr-6 pb-6 pl-6 group focus:outline-none focus:ring-2 focus:ring-white/30`}
@@ -123,7 +134,7 @@ export const CargoCard: React.FC<CargoCardProps> = ({
         <div className="text-right">
           <div className="text-xs text-gray-400">by {company || '—'}</div>
           <div className="text-xs text-gray-400" aria-label={`rating ${companyRating ?? 0} din 5`}>
-            {typeof companyRating === 'number' ? ('★'.repeat(Math.round(companyRating)) + '☆'.repeat(5 - Math.round(companyRating))) : ('☆☆☆☆☆')}
+            {typeof companyRating === 'number' ? ('★'.repeat(Math.round(companyRating)) + '☆'.repeat(5 - Math.round(companyRating))) : '☆☆☆☆☆'}
           </div>
         </div>
       </div>
@@ -132,7 +143,7 @@ export const CargoCard: React.FC<CargoCardProps> = ({
         <button
           type="button"
           className="glass-border hover:bg-white/5 transition-all text-xs text-white px-3 py-2 rounded-lg"
-          onClick={(e) => { e.stopPropagation(); onView?.(id) ?? onClick?.(id); }}
+          onClick={handleView}
           aria-label="View details"
         >
           View Details
@@ -141,7 +152,7 @@ export const CargoCard: React.FC<CargoCardProps> = ({
           <button
             type="button"
             className="glass-border hover:bg-white/5 transition-all text-xs text-white px-3 py-2 rounded-lg"
-            onClick={(e) => { e.stopPropagation(); onBid?.(id); }}
+            onClick={handleBid}
             aria-label="Bid on cargo"
           >
             Bid
