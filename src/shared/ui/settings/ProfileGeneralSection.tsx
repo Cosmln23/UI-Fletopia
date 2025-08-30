@@ -120,7 +120,7 @@ export const ProfileGeneralSection: React.FC = () => {
     setFormError(null);
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSuccess(null);
     setFormError(null);
@@ -136,9 +136,22 @@ export const ProfileGeneralSection: React.FC = () => {
         setErrors(nextErr);
         return;
       }
-      // Optimistic UX – server action integration va fi adăugată ulterior
+      const form = new FormData();
+      form.set('fullName', parsed.data.fullName);
+      if (parsed.data.companyName) form.set('companyName', parsed.data.companyName);
+      if (parsed.data.homeBaseAddress) form.set('homeBaseAddress', parsed.data.homeBaseAddress);
+      if (parsed.data.phone) form.set('phone', parsed.data.phone);
+
+      const resp = await fetch('/api/settings/profile/update', { method: 'POST', body: form });
+      const json = await resp.json();
+      if (!resp.ok || !json.ok) {
+        const fe: Partial<Record<keyof FormState, string>> = json.fieldErrors ?? {};
+        setErrors((prev) => ({ ...prev, ...fe }));
+        setFormError(json.message ?? 'Salvarea a eșuat.');
+        return;
+      }
       setInitial(parsed.data);
-      setSuccess("Salvat cu succes.");
+      setSuccess('Salvat cu succes.');
     } catch {
       setFormError("A apărut o eroare la salvare. Încercați din nou.");
     } finally {
