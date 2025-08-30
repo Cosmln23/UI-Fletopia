@@ -146,7 +146,27 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
         <ScoutStatus active={isScoutActive} radiusKm={scoutRadiusKm} locationLabel={scoutLocationText || (scoutCoords ? "Locația curentă" : "")} resultsCount={filteredCargo.length} />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 animate-on-scroll in-view">
           {filteredCargo.map((c) => (
-            <CargoCard key={c.id} id={c.id} title={c.title} postedAgo={c.time} from={c.from} to={c.to} details={c.details} price={c.price} company={c.company} urgency={c.urgency} onClick={() => openDetail(c.id)} />
+            <CargoCard
+              key={c.id}
+              id={c.id}
+              title={c.title}
+              postedAgo={c.time}
+              from={c.from}
+              to={c.to}
+              weightKg={c.type === 'Pallets' ? 2500 : c.type === 'Container' ? 6500 : 8000}
+              volumeM3={c.type === 'Pallets' ? 12.5 : c.type === 'Container' ? 42.8 : 18.0}
+              vehicleType={c.type}
+              urgency={c.urgency}
+              distanceKm={Math.random() * 1200 + 100}
+              pickupAt={"azi 08:00"}
+              deliveryAt={"azi 18:00"}
+              priceText={c.price}
+              paymentTerms={"30 zile"}
+              company={c.company}
+              companyRating={4.3}
+              role="carrier"
+              onClick={() => openDetail(c.id)}
+            />
           ))}
         </div>
       </MarketplaceHero>

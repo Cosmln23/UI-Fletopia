@@ -21,16 +21,17 @@ function sanitize(value: unknown): string {
   return typeof value === 'string' ? value : '';
 }
 
-export default async function MarketplacePage({ searchParams }: { searchParams?: MarketplaceSearchParams }) {
+export default async function MarketplacePage({ searchParams }: { searchParams: Promise<MarketplaceSearchParams> }) {
+  const sp = await searchParams;
   const initialFilters: MarketplaceFiltersState = {
-    country: sanitize(searchParams?.country) || '',
-    sort: sanitize(searchParams?.sort) || 'newest',
-    type: sanitize(searchParams?.type) || '',
-    urgency: sanitize(searchParams?.urgency) || '',
-    date: sanitize(searchParams?.date) || '',
-    min: sanitize(searchParams?.min) || '',
-    max: sanitize(searchParams?.max) || '',
-    query: sanitize(searchParams?.query) || '',
+    country: sanitize(sp?.country) || '',
+    sort: sanitize(sp?.sort) || 'newest',
+    type: sanitize(sp?.type) || '',
+    urgency: sanitize(sp?.urgency) || '',
+    date: sanitize(sp?.date) || '',
+    min: sanitize(sp?.min) || '',
+    max: sanitize(sp?.max) || '',
+    query: sanitize(sp?.query) || '',
   };
   return <MarketplaceClient initialFilters={initialFilters} />;
 }
