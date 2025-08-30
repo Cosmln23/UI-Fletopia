@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { MarketplaceHero, MarketplaceTabs, MarketplaceFilters, CargoCard, AddCargoModal, CargoDetailModal, FooterSection, ScoutStatus } from "@/shared/ui";
 import { ScoutBar } from "@/shared/ui/marketplace/ScoutBar";
 import type { CargoDetailData } from "@/shared/ui/marketplace/CargoDetailModal";
+import { useMarketplaceParams } from "@/lib/utils/useMarketplaceParams";
 
 export type MarketplaceFiltersState = {
   country: string;
@@ -44,6 +45,7 @@ const initialCargo: Cargo[] = [
 ];
 
 export default function MarketplaceClient({ initialFilters }: MarketplaceClientProps) {
+  const { params, update } = useMarketplaceParams();
   const [activeTab, setActiveTab] = useState<TabKey>("all-offers");
   const [filters, setFilters] = useState<MarketplaceFiltersState>(initialFilters);
   const [addOpen, setAddOpen] = useState(false);
@@ -54,6 +56,44 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
   const [scoutLocationText, setScoutLocationText] = useState<string>("");
   const [scoutCoords, setScoutCoords] = useState<{ lat: number; lng: number } | undefined>(undefined);
   const [scoutRadiusKm, setScoutRadiusKm] = useState<number>(150);
+
+  // Sync from URL params to local state
+  useEffect(() => {
+    const nextFilters: MarketplaceFiltersState = {
+      country: params.location ?? initialFilters.country,
+      sort: params.sort_by === 'price' ? (params.sort_order === 'asc' ? 'price-low' : 'price-high') : params.sort_by === 'distance' ? 'scout' : 'newest',
+      type: params.vehicle_type ?? '',
+      urgency: initialFilters.urgency, // not modeled in URL yet
+      date: initialFilters.date, // not modeled in URL yet
+      min: params.price_min != null ? String(params.price_min) : '',
+      max: params.price_max != null ? String(params.price_max) : '',
+      query: params.q ?? '',
+    };
+    setFilters((prev) => ({ ...prev, ...nextFilters }));
+    setActiveTab((params.tab as TabKey) ?? 'all-offers');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.location, params.sort_by, params.sort_order, params.vehicle_type, params.price_min, params.price_max, params.q, params.tab]);
+
+  // When local filters change via UI, reflect them in URL
+  useEffect(() => {
+    // Map local filters to URL params
+    const next: Record<string, unknown> = {};
+    if (filters.country) next.location = filters.country;
+    if (filters.type) next.vehicle_type = filters.type;
+    if (filters.min) next.price_min = Number(filters.min);
+    if (filters.max) next.price_max = Number(filters.max);
+    if (filters.query) next.q = filters.query;
+    if (filters.sort === 'price-low') { next.sort_by = 'price'; next.sort_order = 'asc'; }
+    else if (filters.sort === 'price-high') { next.sort_by = 'price'; next.sort_order = 'desc'; }
+    else if (filters.sort === 'scout') { next.sort_by = 'distance'; next.sort_order = 'asc'; }
+    else { next.sort_by = 'newest'; next.sort_order = 'desc'; }
+    update(next, { debounceMs: 250 });
+  }, [filters, update]);
+
+  // Sync tab to URL
+  useEffect(() => {
+    update({ tab: activeTab }, { debounceMs: 0 });
+  }, [activeTab, update]);
 
   useEffect(() => {
     const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" } as IntersectionObserverInit;
