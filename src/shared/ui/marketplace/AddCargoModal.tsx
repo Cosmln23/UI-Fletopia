@@ -16,9 +16,15 @@ export const AddCargoModal: React.FC<AddCargoModalProps> = ({ open, onClose, onS
     destination: "",
     loadDate: "",
     weightKg: "",
+    volumeM3: "",
     pallets: "",
     goodsType: "",
     vehicleType: "",
+    urgency: "medium",
+    deliveryDate: "",
+    priceEUR: "",
+    paymentTerms: "",
+    title: "",
   });
   const [attachments, setAttachments] = useState<File[]>([]);
   const textRef = useRef<HTMLTextAreaElement | null>(null);
@@ -102,11 +108,11 @@ export const AddCargoModal: React.FC<AddCargoModalProps> = ({ open, onClose, onS
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs text-gray-400 mb-2">Cargo Title</label>
-                <input type="text" className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white placeholder-gray-400" placeholder="Enter cargo title" />
+                <input value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} type="text" className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white placeholder-gray-400" placeholder="Enter cargo title" />
               </div>
               <div>
                 <label className="block text-xs text-gray-400 mb-2">Cargo Type</label>
-                <select className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white bg-transparent">
+                <select value={formData.goodsType} onChange={(e) => setFormData({ ...formData, goodsType: e.target.value })} className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white bg-transparent">
                   <option value="">Select cargo type</option>
                   <option value="pallets">Pallets</option>
                   <option value="container">Container</option>
@@ -121,7 +127,7 @@ export const AddCargoModal: React.FC<AddCargoModalProps> = ({ open, onClose, onS
               </div>
               <div>
                 <label className="block text-xs text-gray-400 mb-2">Volume (m³)</label>
-                <input type="number" step="0.1" className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white placeholder-gray-400" placeholder="Enter volume (optional)" />
+                <input value={formData.volumeM3} onChange={(e) => setFormData({ ...formData, volumeM3: e.target.value })} type="number" step="0.1" className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white placeholder-gray-400" placeholder="Enter volume (optional)" />
               </div>
               <div>
                 <label className="block text-xs text-gray-400 mb-2">Vehicle Type</label>
@@ -136,11 +142,10 @@ export const AddCargoModal: React.FC<AddCargoModalProps> = ({ open, onClose, onS
               </div>
               <div>
                 <label className="block text-xs text-gray-400 mb-2">Urgency Level</label>
-                <select className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white bg-transparent" defaultValue="medium">
+                <select value={formData.urgency} onChange={(e) => setFormData({ ...formData, urgency: e.target.value })} className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white bg-transparent">
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
-                  <option value="urgent">Urgent</option>
                 </select>
               </div>
             </div>
@@ -208,7 +213,7 @@ export const AddCargoModal: React.FC<AddCargoModalProps> = ({ open, onClose, onS
                   </div>
                   <div>
                     <label className="block text-xs text-gray-400 mb-2">Delivery Date</label>
-                    <input type="date" className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white" />
+                    <input value={formData.deliveryDate} onChange={(e) => setFormData({ ...formData, deliveryDate: e.target.value })} type="date" className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white" />
                   </div>
                 </div>
               </div>
@@ -242,7 +247,7 @@ export const AddCargoModal: React.FC<AddCargoModalProps> = ({ open, onClose, onS
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs text-gray-400 mb-2">Budget (EUR)</label>
-                <input type="number" className="glass-input w-full focus:outline-none placeholder-gray-400 text-white rounded-lg pt-2 pr-3 pb-2 pl-3" placeholder="Enter price" />
+                <input value={formData.priceEUR} onChange={(e) => setFormData({ ...formData, priceEUR: e.target.value })} type="number" className="glass-input w-full focus:outline-none placeholder-gray-400 text-white rounded-lg pt-2 pr-3 pb-2 pl-3" placeholder="Enter price" />
               </div>
               <div>
                 <label className="block text-xs text-gray-400 mb-2">Special Requirements</label>
@@ -252,6 +257,16 @@ export const AddCargoModal: React.FC<AddCargoModalProps> = ({ open, onClose, onS
                   <option value="fragile">Fragile goods</option>
                   <option value="hazardous">Hazardous materials</option>
                   <option value="oversized">Oversized cargo</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-2">Payment Terms</label>
+                <select value={formData.paymentTerms} onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })} className="glass-input w-full px-3 py-2 rounded-lg focus:outline-none text-white bg-transparent">
+                  <option value="">Select terms</option>
+                  <option value="on delivery">On delivery</option>
+                  <option value="15 zile">15 zile</option>
+                  <option value="30 zile">30 zile</option>
+                  <option value="60 zile">60 zile</option>
                 </select>
               </div>
             </div>
