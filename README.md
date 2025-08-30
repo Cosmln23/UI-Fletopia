@@ -20,6 +20,13 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Pending configuration (EPIC_006)
+
+- TASK_006_003 – Geocoding service requires Google Maps Geocoding API key
+  - Add to environment (server): `GOOGLE_MAPS_API_KEY=your_key`
+  - Enable in Google Cloud Console: APIs & Services → Library → Geocoding API → Enable
+  - Billing must be active
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
