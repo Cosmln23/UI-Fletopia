@@ -120,7 +120,7 @@ export const ProfileGeneralSection: React.FC = () => {
     setFormError(null);
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSuccess(null);
     setFormError(null);
@@ -136,9 +136,23 @@ export const ProfileGeneralSection: React.FC = () => {
         setErrors(nextErr);
         return;
       }
-      // Optimistic UX – server action integration va fi adăugată ulterior
+      const form = new FormData();
+      form.set('fullName', parsed.data.fullName);
+      if (parsed.data.companyName) form.set('companyName', parsed.data.companyName);
+      if (parsed.data.homeBaseAddress) form.set('homeBaseAddress', parsed.data.homeBaseAddress);
+      if (parsed.data.phone) form.set('phone', parsed.data.phone);
+
+      const resp = await fetch('/api/settings/profile/update', { method: 'POST', body: form });
+      const raw: unknown = await resp.json();
+      const json = (typeof raw === 'object' && raw !== null ? raw as { ok?: boolean; fieldErrors?: Partial<Record<keyof FormState, string>>; message?: string } : { ok: false });
+      if (!resp.ok || !json.ok) {
+        const fe: Partial<Record<keyof FormState, string>> = json.fieldErrors ?? {};
+        setErrors((prev) => ({ ...prev, ...fe }));
+        setFormError(json.message ?? 'Salvarea a eșuat.');
+        return;
+      }
       setInitial(parsed.data);
-      setSuccess("Salvat cu succes.");
+      setSuccess('Salvat cu succes.');
     } catch {
       setFormError("A apărut o eroare la salvare. Încercați din nou.");
     } finally {
@@ -156,9 +170,9 @@ export const ProfileGeneralSection: React.FC = () => {
       {formError ? <div className="text-sm text-red-400 mb-4">{formError}</div> : null}
       {success ? <div className="text-sm text-emerald-400 mb-4">{success}</div> : null}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => { void handleSubmit(e); }}>
         <fieldset disabled={loading || saving} className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
             <Input
               label="Nume Complet"
               placeholder="Introduceți numele"
@@ -167,7 +181,7 @@ export const ProfileGeneralSection: React.FC = () => {
               {...(errors.fullName ? { error: errors.fullName } : {})}
               required
             />
-            <div>
+          <div>
               <Input
                 label="Email"
                 placeholder="email@example.com"
@@ -175,7 +189,7 @@ export const ProfileGeneralSection: React.FC = () => {
                 disabled
               />
               <div className="text-xs text-gray-500 mt-1">Schimbarea email-ului se face prin flux securizat</div>
-            </div>
+          </div>
 
             <Input
               label="Telefon"
@@ -191,7 +205,7 @@ export const ProfileGeneralSection: React.FC = () => {
             />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
             <Input
               label="Companie"
               placeholder="Numele companiei (opțional)"
