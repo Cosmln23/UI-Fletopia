@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { MarketplaceHero, MarketplaceTabs, MarketplaceFilters, CargoCard, AddCargoModal, CargoDetailModal, FooterSection, ScoutStatus } from "@/shared/ui";
-import { ScoutBar } from "@/shared/ui/marketplace/ScoutBar";
+import { MarketplaceHero, MarketplaceTabs, MarketplaceFilters, CargoCard, AddCargoModal, CargoDetailModal, FooterSection } from "@/shared/ui";
 import type { CargoDetailData } from "@/shared/ui/marketplace/CargoDetailModal";
 import { useMarketplaceParams } from "@/lib/utils/useMarketplaceParams";
 
@@ -14,6 +13,11 @@ export type MarketplaceFiltersState = {
   min: string;
   max: string;
   query: string;
+  location?: string;
+  radiusKm?: number;
+  vehicleTypes?: string[];
+  dateFrom?: string;
+  dateTo?: string;
 };
 
 export type MarketplaceClientProps = {
@@ -52,15 +56,12 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
   const [detailOpen, setDetailOpen] = useState(false);
   const [detailHtml, setDetailHtml] = useState<string>("");
   const [detailData, setDetailData] = useState<CargoDetailData | undefined>(undefined);
-  // Scout UI state (UI-only)
-  const [scoutLocationText, setScoutLocationText] = useState<string>("");
-  const [scoutCoords, setScoutCoords] = useState<{ lat: number; lng: number } | undefined>(undefined);
-  const [scoutRadiusKm, setScoutRadiusKm] = useState<number>(150);
+  // Location/Radius managed via filters (URL)
 
   // Sync from URL params to local state
   useEffect(() => {
     const nextFilters: MarketplaceFiltersState = {
-      country: params.location ?? initialFilters.country,
+      country: initialFilters.country,
       sort: params.sort_by === 'price' ? (params.sort_order === 'asc' ? 'price-low' : 'price-high') : params.sort_by === 'distance' ? 'scout' : 'newest',
       type: params.vehicle_type ?? '',
       urgency: initialFilters.urgency, // not modeled in URL yet
@@ -68,6 +69,8 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
       min: params.price_min != null ? String(params.price_min) : '',
       max: params.price_max != null ? String(params.price_max) : '',
       query: params.q ?? '',
+      location: params.location ?? initialFilters.location,
+      radiusKm: params.radius,
     };
     setFilters((prev) => ({ ...prev, ...nextFilters }));
     setActiveTab((params.tab as TabKey) ?? 'all-offers');
@@ -78,7 +81,8 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
   useEffect(() => {
     // Map local filters to URL params
     const next: Record<string, unknown> = {};
-    if (filters.country) next.location = filters.country;
+    if (filters.location) next.location = filters.location;
+    if (typeof filters.radiusKm === 'number' && filters.radiusKm > 0) next.radius = Math.round(filters.radiusKm);
     if (filters.type) next.vehicle_type = filters.type;
     if (filters.min) next.price_min = Number(filters.min);
     if (filters.max) next.price_max = Number(filters.max);
@@ -117,33 +121,18 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
     return list;
   }, [filters]);
 
-  const isScoutActive = Boolean((scoutCoords || scoutLocationText) && scoutRadiusKm);
-
+  const isRadiusActive = typeof filters.radiusKm === 'number' && filters.radiusKm > 0 && !!filters.location;
   // Ensure sort switches to scout when active, and revert on reset
   useEffect(() => {
-    if (isScoutActive) {
+    if (isRadiusActive) {
       setFilters((prev) => (prev.sort === "scout" ? prev : { ...prev, sort: "scout" }));
+    } else if (filters.sort === 'scout') {
+      setFilters((prev) => ({ ...prev, sort: 'newest' }));
     }
-  }, [isScoutActive]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRadiusActive]);
 
-  const useCurrentLocation = () => {
-    if (typeof navigator !== "undefined" && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setScoutCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        },
-        () => {
-          // noop UI-only; could show a toast later
-        }
-      );
-    }
-  };
-
-  const resetScout = () => {
-    setScoutCoords(undefined);
-    setScoutLocationText("");
-    if (filters.sort === "scout") setFilters({ ...filters, sort: "newest" });
-  };
+  // Removed useCurrentLocation/resetScout (Scout UI deprecated)
 
   const openDetail = (id: number) => {
     const c = initialCargo.find((x) => x.id === id);
@@ -171,19 +160,7 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
     <div className="antialiased text-gray-100 bg-black pb-20">
       <MarketplaceHero>
         <MarketplaceTabs active={activeTab} onChange={(t) => setActiveTab(t)} onAddCargo={() => setAddOpen(true)} />
-        <div className="mt-4 mb-4">
-          <ScoutBar
-            locationText={scoutLocationText}
-            onLocationTextChange={setScoutLocationText}
-            onUseCurrentLocation={useCurrentLocation}
-            radiusKm={scoutRadiusKm}
-            onRadiusChange={(v) => { setScoutRadiusKm(v); }}
-            active={isScoutActive}
-            onReset={resetScout}
-          />
-        </div>
-        <MarketplaceFilters values={filters} onChange={setFilters} onClear={() => setFilters({ country: "", sort: "newest", type: "", urgency: "", date: "", min: "", max: "", query: "" })} />
-        <ScoutStatus active={isScoutActive} radiusKm={scoutRadiusKm} locationLabel={scoutLocationText || (scoutCoords ? "Locația curentă" : "")} resultsCount={filteredCargo.length} />
+        <MarketplaceFilters values={filters} onChange={setFilters} onClear={() => setFilters({ country: "", sort: "newest", type: "", urgency: "", date: "", min: "", max: "", query: "", location: '', radiusKm: undefined })} />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 animate-on-scroll in-view">
           {filteredCargo.map((c) => (
             <CargoCard

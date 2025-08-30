@@ -5,9 +5,13 @@ export const MarketplaceParamsSchema = z.object({
   location: z.string().trim().optional(),
   radius: z.coerce.number().int().positive().max(1000).optional(),
   // filters
-  vehicle_type: z.string().trim().optional(),
+  vehicle_type: z.string().trim().optional(), // legacy single
+  vehicle_types: z.string().trim().optional(), // comma-separated list
   price_min: z.coerce.number().nonnegative().optional(),
   price_max: z.coerce.number().nonnegative().optional(),
+  date_from: z.string().trim().optional(),
+  date_to: z.string().trim().optional(),
+  urgency: z.enum(['low', 'medium', 'high']).optional(),
   // pagination
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
