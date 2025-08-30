@@ -123,7 +123,7 @@ export const CargoCard: React.FC<CargoCardProps> = ({
         <div className="text-right">
           <div className="text-xs text-gray-400">by {company || '—'}</div>
           <div className="text-xs text-gray-400" aria-label={`rating ${companyRating ?? 0} din 5`}>
-            {typeof companyRating === 'number' ? '★'.repeat(Math.round(companyRating)) + '☆'.repeat(5 - Math.round(companyRating)) : '☆☆☆☆☆'}
+            {typeof companyRating === 'number' ? `${'★'.repeat(Math.round(companyRating))}${'☆'.repeat(5 - Math.round(companyRating))}` : '☆☆☆☆☆'}
           </div>
         </div>
       </div>

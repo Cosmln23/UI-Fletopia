@@ -143,7 +143,7 @@ export const ProfileGeneralSection: React.FC = () => {
       if (parsed.data.phone) form.set('phone', parsed.data.phone);
 
       const resp = await fetch('/api/settings/profile/update', { method: 'POST', body: form });
-      const json = await resp.json();
+      const json: { ok?: boolean; fieldErrors?: Partial<Record<keyof FormState, string>>; message?: string } = await resp.json();
       if (!resp.ok || !json.ok) {
         const fe: Partial<Record<keyof FormState, string>> = json.fieldErrors ?? {};
         setErrors((prev) => ({ ...prev, ...fe }));
@@ -171,7 +171,7 @@ export const ProfileGeneralSection: React.FC = () => {
 
       <form onSubmit={handleSubmit}>
         <fieldset disabled={loading || saving} className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
             <Input
               label="Nume Complet"
               placeholder="Introduceți numele"
@@ -180,7 +180,7 @@ export const ProfileGeneralSection: React.FC = () => {
               {...(errors.fullName ? { error: errors.fullName } : {})}
               required
             />
-            <div>
+          <div>
               <Input
                 label="Email"
                 placeholder="email@example.com"
@@ -188,7 +188,7 @@ export const ProfileGeneralSection: React.FC = () => {
                 disabled
               />
               <div className="text-xs text-gray-500 mt-1">Schimbarea email-ului se face prin flux securizat</div>
-            </div>
+          </div>
 
             <Input
               label="Telefon"
@@ -204,7 +204,7 @@ export const ProfileGeneralSection: React.FC = () => {
             />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
             <Input
               label="Companie"
               placeholder="Numele companiei (opțional)"

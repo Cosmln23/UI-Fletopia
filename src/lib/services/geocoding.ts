@@ -50,7 +50,6 @@ function getGoogleApiKey(): string | null {
 async function fetchFromGoogle(address: string): Promise<GeocodeResult | null> {
   const apiKey = getGoogleApiKey();
   if (!apiKey) {
-    // eslint-disable-next-line no-console
     console.warn('[geocoding] Missing GOOGLE_MAPS_API_KEY; skipping API call');
     return null;
   }
@@ -59,26 +58,31 @@ async function fetchFromGoogle(address: string): Promise<GeocodeResult | null> {
   url.searchParams.set('address', address);
   url.searchParams.set('key', apiKey);
 
-  const resp = await fetch(url.toString(), { method: 'GET' });
+  const resp: Response = await fetch(url.toString(), { method: 'GET' });
   if (!resp.ok) {
-    // eslint-disable-next-line no-console
     console.warn('[geocoding] Google API HTTP error', resp.status);
     return null;
   }
-  const data: any = await resp.json();
-  const status: string = data?.status ?? 'UNKNOWN_ERROR';
+  type GoogleResult = {
+    formatted_address?: string;
+    geometry?: { location?: { lat?: number; lng?: number } };
+  };
+  type GoogleResponse = { status?: string; results?: GoogleResult[] };
+  const data: GoogleResponse = await resp.json();
+  const status: string = data && data.status ? data.status : 'UNKNOWN_ERROR';
   if (status !== 'OK') {
-    // eslint-disable-next-line no-console
     console.warn('[geocoding] Google API status', status);
     return null;
   }
   const result = Array.isArray(data.results) ? data.results[0] : undefined;
-  const loc = result?.geometry?.location;
-  if (!loc || typeof loc.lat !== 'number' || typeof loc.lng !== 'number') return null;
+  const loc = result && result.geometry && result.geometry.location ? result.geometry.location : undefined;
+  const lat = typeof loc?.lat === 'number' ? loc.lat : undefined;
+  const lng = typeof loc?.lng === 'number' ? loc.lng : undefined;
+  if (lat == null || lng == null) return null;
   const parsed: GeocodeResult = {
-    lat: loc.lat,
-    lng: loc.lng,
-    formattedAddress: result?.formatted_address,
+    lat,
+    lng,
+    formattedAddress: result && result.formatted_address ? result.formatted_address : undefined,
     provider: 'google',
     raw: result,
   };
@@ -107,7 +111,6 @@ async function readCache(
       provider: string | null;
     }>();
   if (error) {
-    // eslint-disable-next-line no-console
     console.warn('[geocoding] cache read error', error.message);
     return null;
   }
@@ -143,11 +146,9 @@ async function writeCache(
         { onConflict: 'query_text' }
       );
     if (error) {
-      // eslint-disable-next-line no-console
       console.warn('[geocoding] cache write error', error.message);
     }
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.warn('[geocoding] cache write exception', (e as Error).message);
   }
 }
@@ -189,7 +190,6 @@ export async function geocodeAddresses(
   assertServer();
   const out = new Map<string, GeocodeResult | null>();
   for (const a of addresses) {
-    // eslint-disable-next-line no-await-in-loop
     const r = await geocodeAddress(supabase, a);
     out.set(a, r);
   }

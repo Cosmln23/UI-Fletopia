@@ -77,11 +77,15 @@ async function coreUpdateProfile(supabase: TypedClient, payload: UpdatePayload):
 
 export async function updateProfileAction(formData: FormData): Promise<UpdateResult> {
   const supabase = createServerActionClient();
+  const getStr = (key: string): string | undefined => {
+    const v = formData.get(key);
+    return typeof v === 'string' ? v : undefined;
+  };
   const parsed = UpdateSchema.safeParse({
-    fullName: String(formData.get('fullName') ?? ''),
-    companyName: (formData.get('companyName') ?? undefined) as string | undefined,
-    homeBaseAddress: (formData.get('homeBaseAddress') ?? undefined) as string | undefined,
-    phone: (formData.get('phone') ?? undefined) as string | undefined,
+    fullName: getStr('fullName') ?? '',
+    companyName: getStr('companyName'),
+    homeBaseAddress: getStr('homeBaseAddress'),
+    phone: getStr('phone'),
   });
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
