@@ -69,8 +69,8 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
       min: params.price_min != null ? String(params.price_min) : '',
       max: params.price_max != null ? String(params.price_max) : '',
       query: params.q ?? '',
-      location: params.location ?? initialFilters.location,
-      radiusKm: params.radius,
+      ...(params.location && { location: params.location }),
+      ...(params.radius !== undefined && { radiusKm: params.radius }),
     };
     setFilters((prev) => ({ ...prev, ...nextFilters }));
     setActiveTab((params.tab as TabKey) ?? 'all-offers');
@@ -160,7 +160,7 @@ export default function MarketplaceClient({ initialFilters }: MarketplaceClientP
     <div className="antialiased text-gray-100 bg-black pb-20">
       <MarketplaceHero>
         <MarketplaceTabs active={activeTab} onChange={(t) => setActiveTab(t)} onAddCargo={() => setAddOpen(true)} />
-        <MarketplaceFilters values={filters} onChange={setFilters} onClear={() => setFilters({ country: "", sort: "newest", type: "", urgency: "", date: "", min: "", max: "", query: "", location: '', radiusKm: undefined })} />
+        <MarketplaceFilters values={filters} onChange={setFilters} onClear={() => setFilters({ country: "", sort: "newest", type: "", urgency: "", date: "", min: "", max: "", query: "", location: '' })} />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 animate-on-scroll in-view">
           {filteredCargo.map((c) => (
             <CargoCard
