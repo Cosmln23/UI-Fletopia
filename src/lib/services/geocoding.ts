@@ -14,7 +14,7 @@ type TypedClient = SupabaseClient<Database>;
 export type GeocodeResult = {
   lat: number;
   lng: number;
-  formattedAddress?: string;
+  formattedAddress?: string | undefined;
   provider: 'cache' | 'google';
   raw?: unknown;
 };
@@ -132,21 +132,19 @@ async function writeCache(
   result: GeocodeResult
 ): Promise<void> {
   try {
-    const { error } = await supabase
+    const payload: Database['public']['Tables']['geocoding_cache']['Insert'][] = [
+      {
+        query_text: normalizedAddress,
+        provider: result.provider,
+        lat: result.lat,
+        lng: result.lng,
+      },
+    ];
+    const { error } = await (supabase as unknown as {
+      from: (table: string) => { upsert: (vals: unknown, opts?: unknown) => Promise<{ error: { message: string } | null }> };
+    })
       .from('geocoding_cache')
-      .upsert(
-        [
-          {
-            query_text: normalizedAddress,
-            provider: result.provider,
-            lat: result.lat,
-            lng: result.lng,
-            // geo point could be set by DB trigger or here if available
-            // created_at defaults in DB
-          },
-        ],
-        { onConflict: 'query_text' }
-      );
+      .upsert(payload, { onConflict: 'query_text' });
     if (error) {
       console.warn('[geocoding] cache write error', error.message);
     }

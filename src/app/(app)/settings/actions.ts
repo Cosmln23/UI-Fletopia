@@ -37,9 +37,10 @@ async function coreUpdateProfile(supabase: TypedClient, payload: UpdatePayload):
   const userId = userData.user.id;
 
   // Prepare update object
-  const update: Record<string, unknown> = {
+  // Shape matches profiles.Update; we include only provided fields
+  const update: { full_name: string; company_name?: string | null; home_base_geo?: unknown } = {
     full_name: payload.fullName,
-    company_name: payload.companyName ?? null,
+    ...(payload.companyName !== undefined ? { company_name: payload.companyName ?? null } : {}),
     // phone could be stored in a separate column when available; keeping in memory for now
   };
 
@@ -56,7 +57,9 @@ async function coreUpdateProfile(supabase: TypedClient, payload: UpdatePayload):
     }
   }
 
-  const { error: updErr } = await supabase
+  const { error: updErr } = await (supabase as unknown as {
+    from: (table: string) => { update: (u: unknown) => { eq: (col: string, val: string) => Promise<{ error: { message: string } | null }> } };
+  })
     .from('profiles')
     .update(update)
     .eq('user_id', userId);
@@ -64,15 +67,13 @@ async function coreUpdateProfile(supabase: TypedClient, payload: UpdatePayload):
     return { ok: false, message: 'Salvarea profilului a eșuat. Încercați din nou.' };
   }
 
-  return {
-    ok: true,
-    data: {
-      fullName: payload.fullName,
-      companyName: payload.companyName,
-      phone: payload.phone,
-      homeBaseGeoUpdated,
-    },
+  const data: UpdateResult['data'] = {
+    fullName: payload.fullName,
+    homeBaseGeoUpdated,
   };
+  if (payload.companyName !== undefined) data.companyName = payload.companyName as string;
+  if (payload.phone !== undefined) data.phone = payload.phone as string;
+  return { ok: true, data };
 }
 
 export async function updateProfileAction(formData: FormData): Promise<UpdateResult> {
