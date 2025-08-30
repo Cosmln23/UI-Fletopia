@@ -141,10 +141,10 @@ async function writeCache(
       },
     ];
     const { error } = await (supabase as unknown as {
-      from: (table: string) => { upsert: (vals: unknown, opts?: unknown) => Promise<{ error: { message: string } | null }> };
+      from: (table: string) => { upsert: (vals: unknown) => Promise<{ error: { message: string } | null }> };
     })
       .from('geocoding_cache')
-      .upsert(payload, { onConflict: 'query_text' });
+      .upsert(payload);
     if (error) {
       console.warn('[geocoding] cache write error', error.message);
     }

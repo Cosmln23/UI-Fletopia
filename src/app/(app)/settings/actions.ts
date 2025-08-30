@@ -71,8 +71,8 @@ async function coreUpdateProfile(supabase: TypedClient, payload: UpdatePayload):
     fullName: payload.fullName,
     homeBaseGeoUpdated,
   };
-  if (payload.companyName !== undefined) data.companyName = payload.companyName as string;
-  if (payload.phone !== undefined) data.phone = payload.phone as string;
+  if (payload.companyName !== undefined) data.companyName = payload.companyName;
+  if (payload.phone !== undefined) data.phone = payload.phone;
   return { ok: true, data };
 }
 
