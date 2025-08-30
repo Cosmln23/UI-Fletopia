@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
     const url = new URL('/login', origin);
     url.searchParams.set('error', first);
     if (requestedRedirect) url.searchParams.set('redirect', requestedRedirect);
-    return NextResponse.redirect(url, { status: 303 });
+    res.headers.set('Location', url.toString());
+    return res;
   }
 
   // set remember cookie for server cookie lifetime decisions
@@ -52,12 +53,14 @@ export async function POST(req: NextRequest) {
     const url = new URL('/login', origin);
     url.searchParams.set('error', error.message);
     if (requestedRedirect) url.searchParams.set('redirect', requestedRedirect);
-    return NextResponse.redirect(url, { status: 303 });
+    res.headers.set('Location', url.toString());
+    return res;
   }
 
   // Determine final redirect: prefer requested redirect; else role-based default
   if (requestedRedirect) {
-    return NextResponse.redirect(new URL(requestedRedirect, origin), { status: 303 });
+    res.headers.set('Location', new URL(requestedRedirect, origin).toString());
+    return res;
   }
 
   try {
@@ -74,9 +77,11 @@ export async function POST(req: NextRequest) {
       else if (profile?.role === 'shipper') fallback = '/marketplace';
       else fallback = '/marketplace';
     }
-    return NextResponse.redirect(new URL(fallback, origin), { status: 303 });
+    res.headers.set('Location', new URL(fallback, origin).toString());
+    return res;
   } catch {
-    return NextResponse.redirect(new URL('/marketplace', origin), { status: 303 });
+    res.headers.set('Location', new URL('/marketplace', origin).toString());
+    return res;
   }
 }
 
